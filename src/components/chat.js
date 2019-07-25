@@ -17,24 +17,64 @@ export default class extends Component {
         endpoint: 'http://localhost:8000/',
         name : JSON.parse(localStorage.getItem('name')),
         messages: [],
-        newMessage: ''
+        newMessage: '',
+        startTime: new Date("1000-00-00T12:00:00Z"),
+        difference: '0 seconds ago',
+        timeDifference: []
     }
     componentDidMount = () =>  {
         socket.on('chat', message => {
           let messages = this.state.messages
             messages.push(message)
-            this.setMessages(messages)
+            // this.setMessages(messages,message.startTime)
         })
+
+        this.interval = setInterval(() => this.updateTimeDifference(), 10000);
       }
 
     componentWillUnmount = ()  => {
         socket.close()
+        clearInterval(this.interval)
     }
-    setMessages = (msgs) => {
-        this.setState( 
-            {
-               messages: msgs
-            })
+    updateTimeDifference =  () => {
+        this.state.messages.forEach((chat_msg)=>{
+            
+            const today = new Date();
+            const endDate = new Date(chat_msg.startTime);
+            const days = parseInt((endDate - today) / (1000 * 60 * 60 * 24));
+            const hours = parseInt(Math.abs(endDate - today) / (1000 * 60 * 60) % 24);
+            const minutes = parseInt(Math.abs(endDate.getTime() - today.getTime()) / (1000 * 60) % 60);
+            const seconds = parseInt(Math.abs(endDate.getTime() - today.getTime()) / (1000) % 60);
+            
+            var new_messages ={name:chat_msg.name,
+                                message: chat_msg.newMessage,
+                                timestamp: chat_msg.timestamp,
+                                startTime: chat_msg.startTime,
+                             }
+            // if(minutes > 60){
+            //     this.setState({difference:hours})
+                
+            // }else if(hours > 24){
+            //     this.setState({difference:days +  ' ' + 'days ago'})
+            // }else if(minutes <= 0 || minutes === NaN ){
+                chat_msg.timeDifference = seconds;
+
+                
+                console.log('chat_msg', chat_msg)
+                // this.setState({messages:seconds +  ' ' + 'sec ago'})
+                
+            
+            // }else{
+            //     this.setState({difference:minutes +  ' ' + 'min ago'})
+            //     this.setState({timeDifference:minutes})
+            // }
+            
+        })
+      
+    }
+    setMessages = (chat_message) => {
+        // this.setState( { messages: chat_message, startTime: new Date(start_time)})
+        this.setState( { messages: chat_message})
     }
 
     handleSubmitName = (name) => {
@@ -45,55 +85,47 @@ export default class extends Component {
         socket.emit('chat', {
             name:this.state.name,
             message: this.state.newMessage,
-            timestamp: new Date().toISOString()
-
+            timestamp: new Date().toISOString(),
+            startTime: new Date()
         })
-        
         this.setState({
             newMessage:''
         })
-        
     }
     render() {
         const {open, name, messages, newMessage} = this.state;
-
-        return (
+         return (
             <div>
-                <List style={{height:'500px'}}>
-                
-                     {
-                        messages.map((message, key) => [
-                           <ListItem alignItems="flex-start" key={key}>
+                <List style={{height:'400px'}}>
+                    {
+                        messages.map((message, i) => [
+                           <ListItem alignItems="flex-start" key={i}>
                         
-                        <ListItemAvatar>
-                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={message.timestamp}
-                            secondary={
-                            <React.Fragment>
-                                <Typography
-                                    component="span"
-                                    variant="body2"
-                                    color="textPrimary"
-                                >
-                                {message.name}
-                                </Typography>
-                                {' - '}{message.message},
-                            </React.Fragment>
+                                <ListItemAvatar>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={message.name}
+                                    secondary={
+                                    <React.Fragment>
+                                        <Typography
+                                            component="span"
+                                            variant="body2"
+                                            color="textPrimary"
+                                        >
+                                            {message.message}
+                                        </Typography>
+                                        {'  '}{this.state.difference}
+                                    </React.Fragment>
                             
-                              }
-                        />
-                         
-                    </ListItem>,
-                    <Divider variant="inset" component="li" />
-                     ]
-                 )}
-             </List>
-
-                
+                                    }
+                                />
+                             </ListItem>,
+                            <Divider variant="inset" component="li" />
+                        ]
+                    )}
+                </List>
                 <div style={{display:flexbox,bottom:0}}>
-               
                     <TextField
                         position="fixed"
                         id="outlined-full-width"
@@ -120,7 +152,7 @@ export default class extends Component {
                         variant="outlined"
                         onClick={this.handleSubmitMasseges}
                     >
-                    submit
+                        submit
                     </Button>
                </div>
             </div>
