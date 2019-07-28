@@ -15,26 +15,15 @@ export default class extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
-
-
         localStorage.removeItem('name');
         localStorage.setItem('name', JSON.stringify(this.state.name))
-        // this.state.name?
-        // this.props.history.push('/chat'):
-        // this.props.history.push('/')
         if(this.state.name){
           this.login()
           this.props.history.push('/chat')
-
-
         }else{
             this.props.history.push('/')
-
         }
-
-
     }
-
     login = ()=>{
         Auth.authenticate();
         console.log(Auth.getAuth())
@@ -47,7 +36,7 @@ export default class extends Component {
         return (
             <div>
                 <Grid item xs={12}>
-                    <Paper style={{textAlign: 'center', height:'600px'}}>
+                    <Paper style={{textAlign: 'center', height:'640px', background:'#efebe9'}}>
               
                     <TextField
                         style={{left:50}}
