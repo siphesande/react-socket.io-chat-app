@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid';
@@ -37,18 +38,25 @@ export default class extends Component {
             <div>
                 <Grid item xs={12}>
                     <Paper style={{textAlign: 'center', height:'640px', background:'#efebe9'}}>
+                        <Typography 
+                            variant="h5" 
+                            gutterBottom
+                            style={{ textAlign:'center'}}
+                            >
+                           Real-Time Chat App
+                        </Typography>
               
-                    <TextField
-                        style={{left:50}}
-                        id="outlined-name"
-                        label="Login"
-                        placeholder="Enter your name"
-                        value={this.state.name}
-                        onChange={(e)=>{
-                            this.setState({name:e.target.value})
-                        }}
-                        margin="normal"
-                        variant="outlined"
+                        <TextField
+                            style={{left:50}}
+                            id="outlined-name"
+                            label="Login"
+                            placeholder="Enter your name"
+                            value={this.state.name}
+                            onChange={(e)=>{
+                                this.setState({name:e.target.value})
+                            }}
+                            margin="normal"
+                            variant="outlined"
                     >
                  
                     </TextField>
