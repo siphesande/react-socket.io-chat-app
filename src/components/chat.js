@@ -38,7 +38,7 @@ export default class extends Component {
         
     }
     componentWillUnmount = ()  => {
-        socket.close()
+        socket.off('chat')
         clearInterval(this.interval)
     }
     updateTimePassAfterMessageHasSent =  () => {
@@ -82,6 +82,7 @@ export default class extends Component {
     }
     handleSubmitMasseges = (e) => {
         e.preventDefault()
+        if(this.state.newMessage !== ''){
         socket.emit('chat', {
             name:this.state.name,
             message: this.state.newMessage,
@@ -91,6 +92,10 @@ export default class extends Component {
         this.setState({
             newMessage:''
         })
+        }
+        else{
+        alert('Can`t  send empty message')
+        }
     }
 
     render() {
@@ -205,7 +210,9 @@ export default class extends Component {
                         style={{width:'12%', height:'56px',top:26, left:4, bottom:0}}
                         size="large"
                         variant="outlined"
-                        onClick={this.handleSubmitMasseges}
+                        onClick={
+                            this.handleSubmitMasseges
+                        }
                     >   
                        <Icon>send</Icon>
                         
