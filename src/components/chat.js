@@ -16,7 +16,6 @@ import Icon from '@material-ui/core/Icon';
 import Auth from '../Auth';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import { css, right } from 'glamor';
-import { grey } from '@material-ui/core/colors';
 
 const socket = io('https://express-socket-io-server.herokuapp.com',{ transports: ['websocket'] });
 
